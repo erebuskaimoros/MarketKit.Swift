@@ -4,7 +4,7 @@ import XCTest
 @testable import MarketKit
 
 final class ThwalletEvmNetworkCatalogTests: XCTestCase {
-    func testNormalizesCompleteContractsAndInjectsNativeRows() {
+    func testNormalizesCompleteContractsAndInjectsNativeRows() throws {
         let validContract = TokenRecord(
             coinUid: "usd-coin",
             blockchainUid: "blast",
