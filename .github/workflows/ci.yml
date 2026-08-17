@@ -1,0 +1,50 @@
+name: Thwallet MarketKit CI
+
+on:
+  push:
+    branches: [master, thwallet-six-evm]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: market-kit-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    if: ${{ github.repository == 'erebuskaimoros/MarketKit.Swift' }}
+    runs-on: macos-26
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Select Xcode 26.4
+        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1
+        with:
+          xcode-version: '26.4'
+
+      - name: Select simulator
+        id: simulator
+        run: |
+          simulator_id=$(xcrun simctl list devices available --json | ruby -rjson -e '
+            devices = JSON.parse(STDIN.read).fetch("devices")
+            iphone = devices.values.flatten.find { |device| device.fetch("name").start_with?("iPhone") }
+            abort "No available iPhone simulator" unless iphone
+            print iphone.fetch("udid")
+          ')
+          test -n "$simulator_id"
+          echo "id=$simulator_id" >> "$GITHUB_OUTPUT"
+
+      - name: Run package tests
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -scheme MarketKit \
+            -destination 'platform=iOS Simulator,id=${{ steps.simulator.outputs.id }}' \
+            CODE_SIGNING_ALLOWED=NO \
+            test

@@ -32,5 +32,12 @@ let package = Package(
                 .copy("Dumps"),
             ]
         ),
+        .testTarget(
+            name: "MarketKitTests",
+            dependencies: [
+                "MarketKit",
+                .product(name: "GRDB", package: "GRDB.swift"),
+            ]
+        ),
     ]
 )

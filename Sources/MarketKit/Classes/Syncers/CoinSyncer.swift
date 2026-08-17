@@ -8,7 +8,7 @@ class CoinSyncer {
     private let keyTokensLastSyncTimestamp = "coin-syncer-tokens-last-sync-timestamp"
     private let keyInitialSyncVersion = "coin-syncer-initial-sync-version"
     private let limit = 1000
-    private let currentVersion = 2
+    private let currentVersion = 3
 
     private let storage: CoinStorage
     private let hsProvider: HsProvider
@@ -31,7 +31,21 @@ class CoinSyncer {
 
     private func handleFetched(coins: [Coin], blockchainRecords: [BlockchainRecord], tokenRecords: [TokenRecord]) {
         do {
-            try storage.update(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: transform(tokenRecords: tokenRecords))
+            let evmNormalized = ThwalletEvmNetworkCatalog.normalize(
+                coins: coins,
+                blockchainRecords: blockchainRecords,
+                tokenRecords: transform(tokenRecords: tokenRecords)
+            )
+            let normalized = ThwalletDogecoinCatalog.normalize(
+                coins: evmNormalized.coins,
+                blockchainRecords: evmNormalized.blockchainRecords,
+                tokenRecords: evmNormalized.tokenRecords
+            )
+            try storage.update(
+                coins: normalized.coins,
+                blockchainRecords: normalized.blockchainRecords,
+                tokenRecords: normalized.tokenRecords
+            )
             fullCoinsUpdatedSubject.send()
         } catch {
             print("Fetched data error: \(error)")
@@ -101,7 +115,21 @@ extension CoinSyncer {
                 return
             }
 
-            try storage.update(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: transform(tokenRecords: tokenRecords))
+            let evmNormalized = ThwalletEvmNetworkCatalog.normalize(
+                coins: coins,
+                blockchainRecords: blockchainRecords,
+                tokenRecords: transform(tokenRecords: tokenRecords)
+            )
+            let normalized = ThwalletDogecoinCatalog.normalize(
+                coins: evmNormalized.coins,
+                blockchainRecords: evmNormalized.blockchainRecords,
+                tokenRecords: evmNormalized.tokenRecords
+            )
+            try storage.update(
+                coins: normalized.coins,
+                blockchainRecords: normalized.blockchainRecords,
+                tokenRecords: normalized.tokenRecords
+            )
 
             try syncerStateStorage.save(value: "\(currentVersion)", key: keyInitialSyncVersion)
             try syncerStateStorage.delete(key: keyCoinsLastSyncTimestamp)
