@@ -5,6 +5,7 @@ public enum BlockchainType {
     case litecoin
     case dash
     case dogecoin
+    case ripple
     case zcash
     case monero
     case zano
@@ -32,6 +33,7 @@ public enum BlockchainType {
         case "litecoin": self = .litecoin
         case "dash": self = .dash
         case "dogecoin": self = .dogecoin
+        case "ripple": self = .ripple
         case "zcash": self = .zcash
         case "monero": self = .monero
         case "zano": self = .zano
@@ -61,6 +63,7 @@ public enum BlockchainType {
         case .litecoin: return "litecoin"
         case .dash: return "dash"
         case .dogecoin: return "dogecoin"
+        case .ripple: return "ripple"
         case .zcash: return "zcash"
         case .monero: return "monero"
         case .zano: return "zano"

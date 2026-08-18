@@ -36,10 +36,15 @@ class CoinSyncer {
                 blockchainRecords: blockchainRecords,
                 tokenRecords: transform(tokenRecords: tokenRecords)
             )
-            let normalized = ThwalletDogecoinCatalog.normalize(
+            let dogecoinNormalized = ThwalletDogecoinCatalog.normalize(
                 coins: evmNormalized.coins,
                 blockchainRecords: evmNormalized.blockchainRecords,
                 tokenRecords: evmNormalized.tokenRecords
+            )
+            let normalized = ThwalletXrpCatalog.normalize(
+                coins: dogecoinNormalized.coins,
+                blockchainRecords: dogecoinNormalized.blockchainRecords,
+                tokenRecords: dogecoinNormalized.tokenRecords
             )
             try storage.update(
                 coins: normalized.coins,
@@ -120,10 +125,15 @@ extension CoinSyncer {
                 blockchainRecords: blockchainRecords,
                 tokenRecords: transform(tokenRecords: tokenRecords)
             )
-            let normalized = ThwalletDogecoinCatalog.normalize(
+            let dogecoinNormalized = ThwalletDogecoinCatalog.normalize(
                 coins: evmNormalized.coins,
                 blockchainRecords: evmNormalized.blockchainRecords,
                 tokenRecords: evmNormalized.tokenRecords
+            )
+            let normalized = ThwalletXrpCatalog.normalize(
+                coins: dogecoinNormalized.coins,
+                blockchainRecords: dogecoinNormalized.blockchainRecords,
+                tokenRecords: dogecoinNormalized.tokenRecords
             )
             try storage.update(
                 coins: normalized.coins,
